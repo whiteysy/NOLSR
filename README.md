@@ -1,51 +1,30 @@
-NLSR - Named Data Link State Routing Protocol
+NOLSR - Named Data Optimized Link State Routing Protocol
 =============================================
-
-For complete documentation and more extensive information,
-please visit the [NLSR homepage](http://named-data.net/doc/NLSR/current/).
-
-If you are new to the NDN community of software generally, read the
-[Contributor's Guide](https://github.com/named-data/NFD/blob/master/CONTRIBUTING.md).
-
 ## Overview
+NOLSR is a routing protocol designed for NDN-MANET based on OLSR. The main function of NOLSR is to provide a routing protocol to populate NFD's FIB.  
 
-NLSR is a routing protocol in NDN that populates NDN's Routing Information Base. NLSR
-will continue to evolve alongside the Named Data Networking [protocol](http://named-data.net/doc/ndn-tlv/).
+It is a proactive routing protocol based on link state. Neighbors periodically send hello-data to discover and maintain neighbor relationships. Only multipiont relay(MPR) will forward LSA to reduce flooding of LSAs. Each node uses the Dijkstra algorithm to calculate the route.
 
-NLSR is an open and free software package licensed under the GPL 3.0 license and free to all
-Internet users and developers.  For more information about the licensing details and
-limitations, refer to [COPYING.md](https://github.com/named-data/NLSR/blob/master/COPYING.md).
-
-NLSR is developed by the members of the [NSF-sponsored NDN project team](https://named-data.net/project/participants/).
-For more details, please refer to [AUTHORS.md](https://github.com/named-data/NLSR/blob/master/AUTHORS.md).
-Bug reports and feedback are highly appreciated and can be made through the
-[Redmine site](https://redmine.named-data.net/projects/nlsr).
-
-The main design goal of NLSR is to provide a routing protocol to populate NDN's FIB.
-NLSR calculates the routing table using link-state or hyperbolic routing and produces
-multiple faces for each reachable name prefix in a single authoritative domain. NLSR
-will continue to evolve over time to include neighbor discovery and to become a full
-fledged inter-domain routing protocol for NDN.
-
-
-Source releases
+Source code structure
 ---------------
 
-The source code and source-code installation instructions are always available at
-the following links:
+The implementation of NOLSR leverages the framework of NLSR source code framework. In order to realize the NOLSR's own functions, it has been greatly modified. Details are as follows:
 
-- [Installation](https://named-data.net/doc/NLSR/current/INSTALL.html)
-- [Getting Started with NLSR](https://named-data.net/doc/NLSR/current/GETTING-STARTED.html)
-- [GitHub NLSR repository](https://github.com/named-data/NLSR)
+- New file: (1) hello-message.cpp/hpp: Provide the format of hello-data and its serialization and deserialization.
+            (2) tuple-state.cpp/hpp: Provide the addition, deletion and alteration of network information.
+            (3) tuple.hpp:Provide the storage of network information(such as neighbor, two-hop neighbor, mpr, mpr-selector).
+            
+- Modified file: nlsr.cpp/hpp, lsbd.cpp/hpp, hello-protocol.cpp/hpp, routing-calculator.cpp/hpp...
 
-Additional information
+Installation
 ----------------------
 
-- [Contributor's Guide](https://github.com/named-data/NFD/blob/master/CONTRIBUTING.md)
-- [NLSR Wiki](https://redmine.named-data.net/projects/nlsr/wiki/)
-- Feature requests and bug reports are welcome on our
-  [NLSR on NDN Redmine](https://redmine.named-data.net/projects/nlsr)
-- [NLSR Mailing List Sign Up](https://listserv.memphis.edu/scripts/wa.exe?GETPW1)
-- [NLSR Mailing List](https://listserv.memphis.edu/scripts/wa.exe?SUBED1=NLSR-HELP-L&A=1)
-- [NLSR Mailing List Archives](https://listserv.memphis.edu/scripts/wa.exe?A0=NLSR-HELP-L)
-- [NLSR Developer's guide](https://github.com/named-data/NLSR/blob/developers-guide/NLSR-Developers-Guide.pdf)
+Execute the following commands to build NOLSR:
+
+ (1)./waf configure
+ (2)./waf
+ (3)sudo ./waf install
+
+After building NOLSR, it will generate an executable file of c++ in the path "usr/local/bin". The running of NOLSR also need NFD, ndn-cxx.
+
+
